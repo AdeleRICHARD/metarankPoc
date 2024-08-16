@@ -59,11 +59,10 @@ func sendRecommendRequest(modelName string, request RecommendRequest) (Recommend
 func TestMetarankRecommendIntegration(t *testing.T) {
 	request := RecommendRequest{
 		Count: 5,
-		User:  "user1",
 		Items: []string{"69034642", "64835416"}, // Le contexte de recommandation, par ex. un item de référence
 	}
 
-	modelName := "similar" // Remplacez par le nom du modèle que vous utilisez pour les recommandations
+	modelName := "semantic" // Remplacez par le nom du modèle que vous utilisez pour les recommandations
 	response, err := sendRecommendRequest(modelName, request)
 	if err != nil {
 		t.Fatalf("Failed to send recommend request: %v", err)
