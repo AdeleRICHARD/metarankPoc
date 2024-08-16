@@ -35,13 +35,14 @@ Le fichier `config_similarity.yml` est celui qui fait la configuration pour un m
 
 Un deuxème fichier de `config.yml` a été créée et utilisé pour créer un metarank capable de nous donner les recommandations basées sur l'id des annonces.
 
+### Pour un modèle de similarité seulement 
+
 Un fichier de config a déjà été généré dans ce projet. Mais si vous voulez changer de config en fonction de vos données, vous pouvez utiliser l'autofeature de metarank. ATTENTION, l'autofeature fonctionne seulement pour les modèles avec intéraction utilisateur.
 
 Exemple : 
 ```bash
 docker run -v $(pwd)/user_interaction_events_100.jsonl:/input/events.jsonl -v $(pwd):/output metarank/metarank autofeature --data /input/events.jsonl --out /output/config.yml
 ```
-### Pour un modèle de similarité seulement 
 Les données dans le jsonl doivent être triées et doivent comporter au moins 10 clicks utilisateurs et au moins 100 events. 
 Il faut aussi que ça soit sorted par timestamp, mais metarank a une commande de sort.
 
@@ -56,6 +57,7 @@ docker run -p 8080:8080 -v $(pwd)/config.yml:/config.yml -v $(pwd)/data:/data me
 ```
 
 Soit directement en api entrainée : 
+*ATTENTION* quand on fait la commande suivante, si on a le vpn l'appel ne passe pas car il appel l'api de huggingface et j'ai l'impression que ça fait conflit.
 
 ```bash
 docker run -i -t -p 8080:8080 -v $(pwd):/opt/metarank metarank/metarank:latest standalone --config /opt/metarank/config.yml --data /opt/metarank/formatted_classifieds.jsonl
