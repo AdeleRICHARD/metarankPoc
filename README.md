@@ -65,7 +65,7 @@ docker run -i -t -p 8080:8080 -v $(pwd):/opt/metarank metarank/metarank:latest s
 Cette deuxième approche permet une première initialisation de métarank avec nos bonnes données et notre bonne config pour une service prêt à l'emploi. 
 
 
-On pourra ensuite l'entraîner via l'appel api entraînement : 
+On pourra ensuite l'entraîner via l'appel api [feedback](https://docs.metarank.ai/reference/api#feedback) : 
 ```bash
 curl -X POST http://localhost:8080/feedback -H "Content-Type: application/json" -d '[
   {
