@@ -136,6 +136,8 @@ curl -X POST http://localhost:8080/feedback -H "Content-Type: application/json" 
 ]'
 ```
 
+Plus tard on peut même ajouter le type user pour lier nos annonces à des utilisateurs.
+
 ## Tester le programme et l'api
 
 Pour tester que notre modèle est entraîné correctement et qu'on a les appels api qui fonctionnent, il suffit de lancer la commande de test : 
