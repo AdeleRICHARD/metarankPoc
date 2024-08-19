@@ -140,12 +140,12 @@ Plus tard on peut même ajouter le type user pour lier nos annonces à des utili
 
 ## Tester le programme et l'api
 
-~~Pour tester que notre modèle est entraîné correctement et qu'on a les appels api qui fonctionnent, il suffit de lancer la commande de test : 
+~~Pour tester que notre modèle est entraîné correctement et qu'on a les appels api qui fonctionnent, il suffit de lancer la commande de test :~~
 
-```bash
-go test -v
-```
-~~
+~~```bash~~
+~~go test -v~~
+~~```~~
+
 
 Ou alors de faire un curl pour avoir les recommendations de notre modèle par rapport à une annonce : 
 
