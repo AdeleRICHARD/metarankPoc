@@ -1,0 +1,13 @@
+{
+    "query": {
+        "match_all": {}
+    },
+    "_source": [
+        "location.city",
+        "location.postalCode",
+        "price.value",
+        "property.estateType",
+        "transaction"
+    ],
+    "size": 10000
+}

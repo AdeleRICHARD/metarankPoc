@@ -1,2 +1,4 @@
 /classifieds.json
 /formatted_classifieds.jsonl
+.env
+formatted_classifieds.jsonl.gz
