@@ -227,3 +227,22 @@ Ce que nous donne l'api / modèle après un entraînement sur 100 000 annonces :
 ]
 
 ```
+
+# L'intégration
+[doc](https://docs.metarank.ai/reference/deployment-overview/kubernetes)
+## Prérequis
+Il faudrait déjà créer le container métarank et lui associer un redis.
+En terme de ressources que cela utiliserais je ne suis pas sûr. 
+
+---
+
+**pros**
+- Une solution avec intégration d'IA et qui peut être amélioré plus facilement par la suite. On pourrait vouloir ajouter un solution de ranking éventuellement. 
+- Des résultats qui semblent cohérents sans avoir besoin de trop toucher à une histoire de poids ou autre.
+- Une manière plutôt simple d'entraîner le modèle.
+
+**cons**
+- Metarank n'a pas de stockage de mémoire long term. Cela veut dire qu'à tout moment si le pod redémarre, on perd tout. Il lui faut forcément un redis pour stocker les valeurs.
+- On se pose la question de la rotation des annonces. A combien de temps on estime la durée du stockage.
+- Gestion des résultats qui peut demander à être plus fine que si c'est ES qui nous donne les résultats.
+- Un service en plus à aller chercher.
