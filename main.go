@@ -6,7 +6,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 
 	"net/http"
@@ -15,15 +15,11 @@ import (
 	"time"
 )
 
-const esEndpoint = "https://multi-es-elasticsearch-immo.staging.fcms.io:9201" // Elasticsearch endpoint
+const esEndpoint = "https://multi-es-elasticsearch-immo.staging.fcms.io:9201"
 
-/* const esEndpoint = "http://localhost:9201" // Elasticsearch endpoint
+const index = "fi-classified-latest"
 
-const username = ""
-const password = "" */
-
-const index = "fi-classified-latest" // Elasticsearch index
-var limit = 100000                   // Nombre total de documents souhaités
+var limit = 100000
 
 //go:embed metarank.json
 var request []byte
@@ -44,7 +40,6 @@ type Field struct {
 func main() {
 	outputFile := "formatted_classifieds.jsonl"
 
-	// Appel à readData pour récupérer les données depuis Elasticsearch
 	targetData := readData(index)
 	output, err := os.Create(outputFile)
 	if err != nil {
@@ -56,7 +51,6 @@ func main() {
 	now := time.Now()
 	ts := strconv.FormatInt(now.Unix(), 10)
 	for id, hit := range targetData {
-		// Vérification et conversion sécurisée du champ _source en map
 		source, ok := hit["_source"].(map[string]interface{})
 		if !ok {
 			fmt.Printf("Warning: _source field missing or not a map for document %s\n", id)
@@ -71,7 +65,6 @@ func main() {
 			Fields:    []Field{},
 		}
 
-		// Gestion du champ "price"
 		if price, ok := source["price"].(map[string]interface{}); ok {
 			if value, ok := price["value"]; ok {
 				event.Fields = append(event.Fields, Field{"price", value})
@@ -82,7 +75,6 @@ func main() {
 			fmt.Printf("Warning: Missing 'price' for document %s\n", id)
 		}
 
-		// Gestion du champ "estateType"
 		if property, ok := source["property"].(map[string]interface{}); ok {
 			if estateType, ok := property["estateType"]; ok {
 				event.Fields = append(event.Fields, Field{"estateType", estateType})
@@ -93,7 +85,6 @@ func main() {
 			fmt.Printf("Warning: Missing 'property' for document %s\n", id)
 		}
 
-		// Gestion du champ "location"
 		if location, ok := source["location"].(map[string]interface{}); ok {
 			if city, ok := location["city"]; ok {
 				event.Fields = append(event.Fields, Field{"city", city})
@@ -109,7 +100,6 @@ func main() {
 			fmt.Printf("Warning: Missing 'location' for document %s\n", id)
 		}
 
-		// Gestion du champ "transaction"
 		if transaction, ok := source["transaction"]; ok {
 			event.Fields = append(event.Fields, Field{"transaction", transaction})
 		} else {
@@ -155,7 +145,7 @@ func readData(index string) map[string]map[string]any {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalf("Error reading response body: %v", err)
 	}
@@ -206,7 +196,7 @@ func readData(index string) map[string]map[string]any {
 		}
 		defer scrollResp.Body.Close()
 
-		scrollBody, err := ioutil.ReadAll(scrollResp.Body)
+		scrollBody, err := io.ReadAll(scrollResp.Body)
 		if err != nil {
 			log.Fatalf("Error reading scroll response body: %v", err)
 		}

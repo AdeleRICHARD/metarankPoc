@@ -57,12 +57,12 @@ docker run -p 8080:8080 -v $(pwd)/config.yml:/config.yml -v $(pwd)/data:/data me
 ```
 
 Soit directement en api entrainée : 
-*ATTENTION* quand on fait la commande suivante, si on a le vpn l'appel ne passe pas car il appel l'api de huggingface et j'ai l'impression que ça fait conflit.
+*ATTENTION* quand on fait la commande suivante, si on a le vpn l'appel peut ne pas passer car il appel l'api de huggingface et j'ai l'impression que ça fait conflit.
 
 ```bash
 docker run -i -t -p 8080:8080 -v $(pwd):/opt/metarank metarank/metarank:latest standalone --config /opt/metarank/config.yml --data /opt/metarank/formatted_classifieds.jsonl
 ```
-Cette deuxième approche permet une première initialisation de métarank avec nos bonnes données et notre bonne config pour une service prêt à l'emploi. 
+Cette deuxième approche permet une première initialisation de métarank avec nos bonnes données et notre bonne config pour une service prêt à l'emploi. Avec un set de données à 100 cela prend à peine quelques secondes, mais avec plus de 100 000 annonces nous sommes à 12 minutes.
 
 
 On pourra ensuite l'entraîner via l'appel api [feedback](https://docs.metarank.ai/reference/api#feedback) : 
@@ -140,17 +140,90 @@ Plus tard on peut même ajouter le type user pour lier nos annonces à des utili
 
 ## Tester le programme et l'api
 
-Pour tester que notre modèle est entraîné correctement et qu'on a les appels api qui fonctionnent, il suffit de lancer la commande de test : 
+~~Pour tester que notre modèle est entraîné correctement et qu'on a les appels api qui fonctionnent, il suffit de lancer la commande de test : 
 
 ```bash
 go test -v
 ```
+~~
 
-Ou alors de faire un curl : 
+Ou alors de faire un curl pour avoir les recommendations de notre modèle par rapport à une annonce : 
 
 ```bash
 curl -X POST http://localhost:8080/recommend/semantic -H "Content-Type: application/json" -d '{
   "count":5,
-"items":["69566246"]
+"items":["67492332"]
 }'
+```
+Ce que nous donne l'api / modèle après un entraînement sur 100 000 annonces :
+
+```json
+[
+    {
+        "event": "item",
+        "id": "68726616",
+        "timestamp": "1723821685",
+        "item": "68726616",
+        "fields": [
+            {"name": "price", "value": 279000},
+            {"name": "estateType", "value": "appartement"},
+            {"name": "city", "value": "Cagnes-sur-Mer (06)"},
+            {"name": "postalCode", "value": "06800"},
+            {"name": "transaction", "value": "vente"}
+        ]
+    },
+    {
+        "event": "item",
+        "id": "70996076",
+        "timestamp": "1723821685",
+        "item": "70996076",
+        "fields": [
+            {"name": "price", "value": 510000},
+            {"name": "estateType", "value": "appartement"},
+            {"name": "city", "value": "Cagnes-sur-Mer (06)"},
+            {"name": "postalCode", "value": "06800"},
+            {"name": "transaction", "value": "vente"}
+        ]
+    },
+    {
+        "event": "item",
+        "id": "69884780",
+        "timestamp": "1723821685",
+        "item": "69884780",
+        "fields": [
+            {"name": "price", "value": 275000},
+            {"name": "estateType", "value": "appartement"},
+            {"name": "city", "value": "Cagnes-sur-Mer (06)"},
+            {"name": "postalCode", "value": "06800"},
+            {"name": "transaction", "value": "vente"}
+        ]
+    },
+    {
+        "event": "item",
+        "id": "71709762",
+        "timestamp": "1723821685",
+        "item": "71709762",
+        "fields": [
+            {"name": "price", "value": 343000},
+            {"name": "estateType", "value": "appartement"},
+            {"name": "city", "value": "Cagnes-sur-Mer (06)"},
+            {"name": "postalCode", "value": "06800"},
+            {"name": "transaction", "value": "vente"}
+        ]
+    },
+    {
+        "event": "item",
+        "id": "69505692",
+        "timestamp": "1723821685",
+        "item": "69505692",
+        "fields": [
+            {"name": "price", "value": 285000},
+            {"name": "estateType", "value": "appartement"},
+            {"name": "city", "value": "Cagnes-sur-Mer (06)"},
+            {"name": "postalCode", "value": "06800"},
+            {"name": "transaction", "value": "vente"}
+        ]
+    }
+]
+
 ```
